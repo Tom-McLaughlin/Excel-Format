@@ -1,0 +1,38 @@
+// JMP Script (save as 'create_graph_template.jsl' or similar)
+
+// Placeholders for variables
+col1Name = "Part Number"; // This will be replaced by Python
+col2Name = "Max Force"; // This will be replaced by Python
+sheetName = "Max Forces By Part"; // This will be replaced by Python
+excelFilePath = "C:\Users\c195356\OneDrive - Eli Lilly and Company\Documents\My Code\Excel Format\SampleData.xlsx"; // This will be replaced by Python
+imageFilePath = "C:\Users\c195356\OneDrive - Eli Lilly and Company\Documents\My Code\Excel Format\my_graph_2.png"; // This will be replaced by Python
+
+// Open the Excel file
+dt = Open(excelFilePath, Worksheets(sheetName));
+
+// Set the modeling type for the columns
+Column( dt, col1Name ) << Set Modeling Type( Nominal );
+Column( dt, col2Name ) << Set Modeling Type( Continuous );
+
+
+// Perform the Oneway analysis
+owReport = dt << Oneway(
+    X( Column( dt, col1Name ) ),
+    Y( Column( dt, col2Name ) ),
+    Means and Std Dev( 1 ),
+    Mean Error Bars( 0 ),
+    Mean Diamonds( 1 ),
+    X Axis Proportional( 0 ),
+    Points Jittered( 1 ),
+    Grand Mean( 0 ),
+    Std Dev Lines( 0 ),
+);
+
+// Save the graph as an image
+owReport << Save Picture(imageFilePath, "PNG");
+
+// Close the data table without saving
+dt << Close Window(No Save);
+
+// Exit JMP
+Exit();

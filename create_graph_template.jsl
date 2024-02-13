@@ -1,0 +1,38 @@
+// JMP Script (save as 'create_graph_template.jsl' or similar)
+
+// Placeholders for variables
+col1Name = "COL1NAME_PLACEHOLDER"; // This will be replaced by Python
+col2Name = "COL2NAME_PLACEHOLDER"; // This will be replaced by Python
+sheetName = "SHEETNAME_PLACEHOLDER"; // This will be replaced by Python
+excelFilePath = "EXCEL_FILE_PATH_PLACEHOLDER"; // This will be replaced by Python
+imageFilePath = "IMAGE_FILE_PATH_PLACEHOLDER"; // This will be replaced by Python
+
+// Open the Excel file
+dt = Open(excelFilePath, Worksheets(sheetName));
+
+// Set the modeling type for the columns
+Column( dt, col1Name ) << Set Modeling Type( Nominal );
+Column( dt, col2Name ) << Set Modeling Type( Continuous );
+
+
+// Perform the Oneway analysis
+owReport = dt << Oneway(
+    X( Column( dt, col1Name ) ),
+    Y( Column( dt, col2Name ) ),
+    Means and Std Dev( 1 ),
+    Mean Error Bars( 0 ),
+    Mean Diamonds( 1 ),
+    X Axis Proportional( 0 ),
+    Points Jittered( 1 ),
+    Grand Mean( 0 ),
+    Std Dev Lines( 0 ),
+);
+
+// Save the graph as an image
+owReport << Save Picture(imageFilePath, "PNG");
+
+// Close the data table without saving
+dt << Close Window(No Save);
+
+// Exit JMP
+Exit();
